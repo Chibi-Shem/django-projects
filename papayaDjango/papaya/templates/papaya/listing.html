@@ -1,0 +1,125 @@
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
+<style>
+    body{
+        background-color: lemonchiffon;
+    }
+    .navbar{
+        background-color: darkorange;
+        box-shadow: 0px 1px 10px grey;
+    }
+    #filterBox{
+        background-color: white;
+        box-shadow: 0px 0px 10px lightgrey;
+    }
+    .blogBox{
+        background-color: white;
+        box-shadow: 0px 0px 10px lightgrey;
+    }
+</style>
+
+<nav class="navbar navbar-expand-sm fixed-top">
+    <div class="container-fluid no-gutters row justify-content-between">
+        <div class="col-6">
+            <a class="navbar-brand" href="#">Logo</a>
+        </div>
+        <div class="col-6 d-flex flex-row-reverse">
+            <ul class="navbar-nav d-flex align-items-center">
+                <li>
+                    <form class="form-inline m-2" action="#">
+                        <div class="input-group">
+                            <input class="form-control input-group-prepend" type="text" placeholder="search" name="search">
+                            <button class="btn input-group-append" type="submit">S</button>
+                        </div>
+                    </form>
+                </li>
+                <li class="nav-item ml-5 dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">
+                        Account
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right">
+                        <a class="dropdown-item" data-toggle="modal" data-target="#signin">Sign in</a>
+                        <a class="dropdown-item" data-toggle="modal" data-target="#signup" href="#">Create Account</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="modal fade" id="signin">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4>Sign in</h4>
+                <button data-dismiss="modal" class="close" type="button">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form name="loginUser" action="#">
+                    <div class="form-group">
+                        <input class="form-control" type="text" name="username" placeholder="Enter username">
+                    </div>
+                    <div class="form-group">
+                        <label>Password:</label>
+                        <input class="form-control" type="password" name="password" placeholder="Enter password">
+                    </div>
+                    <button class="btn btn-primary" type="submit">Log In</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="signup">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4>Sign Up</h4>
+                <button data-dismiss="modal" class="close" type="button">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form name="regUser" action="#" onsubmit="return checkFields()">
+                    <div class="form-group">
+                        <label>Username:</label>
+                        <input class="form-control" type="text" name="username" placeholder="Enter username">
+                    </div>
+                    <div class="form-group">
+                        <label>Password:</label>
+                        <input class="mb-2 form-control" type="password" name="password" placeholder="Enter password">
+                        <input class="form-control" type="password" name="password2" placeholder="Confirm password">
+                    </div>
+                    <button class="btn btn-primary" type="button" onclick="checkFields()">Register</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    function checkFields() {
+        if (document.forms["regUser"]["username"].value=="") {
+            document.forms["regUser"]["username"].placeholder="Please input username"
+            document.forms["regUser"]["username"].placeholder="Please input username"
+        }
+    }
+</script>
+<br>
+<br>
+<br>
+<br>
+<div class="container-fluid" id="bodyBox">
+    <div class="row">
+        <div id="bloglistBox" class="col-8 container">
+            <div class="blogBox">
+                <img src="">
+                <h1>Title</h1>
+                <p>Lorem ipsum</p>
+            </div>
+        </div>
+        <div id="filterBox" class="col-2 container">
+            
+        </div>
+    </div>
+</div>
