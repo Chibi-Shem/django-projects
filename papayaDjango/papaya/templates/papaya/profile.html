@@ -1,3 +1,5 @@
+{% load static %}
+
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -13,16 +15,11 @@
         background-color: darkorange;
         box-shadow: 0px 1px 10px grey;
     }
-    #filterBox{
+    .well{
         background-color: white;
-        box-shadow: 0px 0px 10px lightgrey;
-    }
-    .blogBox{
-        background-color: white;
-        box-shadow: 0px 0px 10px lightgrey;
+        padding: 20px 80px 60px 80px;
     }
 </style>
-
 
 <nav class="navbar navbar-fixed-top">
     <div class="container-fluid">
@@ -40,7 +37,7 @@
                         <a href="{% url 'papaya:login' %}">Sign in</a>
                     </li>
                     <li>
-                        <a href="{% url 'papaya:registration' %}">Create Account</a>
+                        <a href="#">Create Account</a>
                     </li>
                 </ul>
             </li>
@@ -57,20 +54,33 @@
 <br>
 <br>
 <br>
-<div class="container-fluid" id="bodyBox">
+<div class="container well" id="bodyBox">
     <div class="row">
-        <div id="bloglistBox" class="col-8 container">
-            <div class="blogBox">
-                <img src="">
-                {% if user.is_authenticated %}
-                    <h1>{{ user.get_username }}</h1>
-                {% endif %}
-                <h1>Title</h1>
-                <p>Lorem ipsum</p>
+        <h1>Your profile</h1>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-sm-4 container">
+            <div class="row">
+                <img src="{% static 'papaya/images/anon.jpeg' %}">
+            </div>
+            <div class="row">
+                <button class="btn btn-default" type="button">Change</button>
             </div>
         </div>
-        <div id="filterBox" class="col-2 container">
-            
+        <div class="col-sm-7 container">
+            <form name="signupUser" method="post" novalidate>
+                {% csrf_token %}
+                {% for field in form %}
+                    <div class="form-group">
+                        {{ field.label }}
+                        {{ field.errors }}
+                        {{ field }}
+                    </div>
+                {% endfor %}
+                <br>
+                <button class="btn btn-default" type="submit">Create</button>
+            </form>
         </div>
     </div>
 </div>
