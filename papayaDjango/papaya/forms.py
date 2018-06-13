@@ -1,7 +1,9 @@
 from django import forms
 from django.contrib.auth.models import User
+from django.forms import Form, ModelForm
+from .models import Blog
 
-class UserRegistrationForm(forms.Form):
+class UserRegistrationForm(Form):
     """Registration form for users"""
     username = forms.CharField(widget=forms.TextInput(),
                                label="Username:", max_length=100)
@@ -58,7 +60,7 @@ class UserRegistrationForm(forms.Form):
         return user
 
 
-class UserLoginForm(forms.Form):
+class UserLoginForm(Form):
     """Login form for users"""
     username = forms.CharField(widget=forms.TextInput(),
                                label="Username:", max_length=100)
@@ -69,3 +71,10 @@ class UserLoginForm(forms.Form):
                                   'placeholder':'Enter username'})
     password.widget.attrs.update({'class':'form-control',
                                   'placeholder':'Enter password'})
+
+class BlogForm(ModelForm):
+    """Blog form for users"""
+
+    class Meta:
+        model = Blog
+        fields = ['title', 'author', 'category', 'content']

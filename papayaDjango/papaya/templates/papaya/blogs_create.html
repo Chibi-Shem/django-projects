@@ -39,10 +39,10 @@
                     </a>
                     <ul class="dropdown-menu dropdown-menu-right">
                         <li>
-                            <a href="#">My profile</a>
+                            <a href="{% url 'papaya:profile' %}">My profile</a>
                         </li>
                         <li>
-                            <a href="{% url 'papaya:blogs' %}">My blogs</a>
+                            <a href="#">My blogs</a>
                         </li>
                         <li>
                             <a href="{% url 'papaya:profile_logout' %}">Logout</a>
@@ -76,23 +76,43 @@
 <br>
 <br>
 <div class="container well" id="bodyBox">
-    <div class="row">
-        <h1>{{ user.username }}'s profile</h1>
-    </div>
     <br>
     <div class="row">
-        <div class="col-sm-3 container">
+        <div class="col-sm-5 container">
             <div class="row">
-                <img src="{% static 'papaya/images/anon.jpeg' %}">
+                <img src="{% static 'papaya/images/empty.png' %}">
             </div>
             <div class="row">
                 <button class="btn btn-default" type="button">Change</button>
             </div>
         </div>
-        <div class="col-sm-7 container">
-            <h2>{{ user.first_name|add:" "|add:user.last_name }}</h2>
-            <h3><i>{{ user.email }}</i></h3>
+        <div class="col-sm-5 container">
+            <form method="post" novalidate>
+                {% csrf_token %}
+                <div class="form-group">
+                    {{ form.title.label }}
+                    {{ form.title.errors }}
+                    {{ form.title }}
+                </div>
+                <div class="form-group">
+                    {{ form.author.label }}
+                    {{ form.author.errors }}
+                    {{ form.author.as_hidden }}
+                    {{ user.username }}
+                </div>
+                <div class="form-group">
+                    {{ form.category.label }}
+                    {{ form.category.errors }}
+                    {{ form.category }}
+                </div>
+                <div class="form-group">
+                    {{ form.content.label }}
+                    <br>
+                    {{ form.content.errors }}
+                    {{ form.content }}
+                </div>
+                <button class="btn btn-default" type="submit">Done</button>
+            </form>
         </div>
-        <a class="btn btn-default" href="{% url 'papaya:profile_edit' %}">Edit</a>
     </div>
 </div>

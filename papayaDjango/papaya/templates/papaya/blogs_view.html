@@ -39,10 +39,10 @@
                     </a>
                     <ul class="dropdown-menu dropdown-menu-right">
                         <li>
-                            <a href="#">My profile</a>
+                            <a href="{% url 'papaya:profile' %}">My profile</a>
                         </li>
                         <li>
-                            <a href="{% url 'papaya:blogs' %}">My blogs</a>
+                            <a href="#">My blogs</a>
                         </li>
                         <li>
                             <a href="{% url 'papaya:profile_logout' %}">Logout</a>
@@ -76,23 +76,35 @@
 <br>
 <br>
 <div class="container well" id="bodyBox">
-    <div class="row">
-        <h1>{{ user.username }}'s profile</h1>
-    </div>
     <br>
     <div class="row">
-        <div class="col-sm-3 container">
+        <div class="col-sm-5 container">
             <div class="row">
-                <img src="{% static 'papaya/images/anon.jpeg' %}">
+                <img src="{% static 'papaya/images/empty.png' %}">
             </div>
             <div class="row">
+            {% if user.is_authenticated and blog.author == user %}
                 <button class="btn btn-default" type="button">Change</button>
+            {% endif %}
             </div>
         </div>
-        <div class="col-sm-7 container">
-            <h2>{{ user.first_name|add:" "|add:user.last_name }}</h2>
-            <h3><i>{{ user.email }}</i></h3>
+        <div class="col-sm-5 container">
+            <div class="form-group">
+                {{ blog.title }}
+            </div>
+            <div class="form-group">
+                {{ blog.author.username }}
+            </div>
+            <div class="form-group">
+                {{ blog.category }}
+            </div>
+            <div class="form-group">
+                {{ blog.content }}
+            </div>
+            {% if user.is_authenticated and blog.author == user %}
+                <a class="btn btn-default" href="{% url 'papaya:blogs_edit' blog.id%}">Edit</a>
+                <a class="btn btn-default" href="{% url 'papaya:blogs_delete' blog.id%}">Delete</button>
+            {% endif %}
         </div>
-        <a class="btn btn-default" href="{% url 'papaya:profile_edit' %}">Edit</a>
     </div>
 </div>

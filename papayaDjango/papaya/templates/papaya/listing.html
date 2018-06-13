@@ -13,13 +13,12 @@
         background-color: darkorange;
         box-shadow: 0px 1px 10px grey;
     }
-    #filterBox{
+    .well{
         background-color: white;
-        box-shadow: 0px 0px 10px lightgrey;
+        padding: 20px 80px 60px 80px;
     }
-    .blogBox{
-        background-color: white;
-        box-shadow: 0px 0px 10px lightgrey;
+    .blog:hover{
+        background-color: lightgrey;
     }
 </style>
 
@@ -32,20 +31,42 @@
         <ul class="nav navbar-nav navbar-right">
             <li class="dropdown">
                 <a class="dropdown-toggle" href="#" data-toggle="dropdown">
+                {% if user.is_authenticated %}
+                    {% if user.first_name %}
+                        {{ user.first_name }}
+                    {% else %}
+                        {{ user.username }}
+                    {% endif %}
+                    <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-right">
+                        <li>
+                            <a href="{% url 'papaya:profile' %}">My profile</a>
+                        </li>
+                        <li>
+                            <a href="{% url 'papaya:blogs' %}">My blogs</a>
+                        </li>
+                        <li>
+                            <a href="{% url 'papaya:profile_logout' %}">Logout</a>
+                        </li>
+                    </ul>
+                {% else %}
                     Account
-                <span class="caret"></span>
-                </a>
-                <ul class="dropdown-menu dropdown-menu-right">
-                    <li>
-                        <a href="{% url 'papaya:login' %}">Sign in</a>
-                    </li>
-                    <li>
-                        <a href="{% url 'papaya:registration' %}">Create Account</a>
-                    </li>
-                </ul>
+                    <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-right">
+                        <li>
+                            <a href="{% url 'papaya:profile_login' %}">Sign in</a>
+                        </li>
+                        <li>
+                            <a href="{% url 'papaya:profile_create' %}">Create Account</a>
+                        </li>
+                    </ul>
+                {% endif %}
             </li>
         </ul>
-        <form class="navbar-form navbar-right" action="#">
+        <form class="navbar-form navbar-right" method="post">
+            {% csrf_token %}
             <div class="form-group">
                 <input style="width:300px" class="form-control" type="text" placeholder="search" name="search">
             </div>
@@ -57,20 +78,11 @@
 <br>
 <br>
 <br>
-<div class="container-fluid" id="bodyBox">
-    <div class="row">
-        <div id="bloglistBox" class="col-8 container">
-            <div class="blogBox">
-                <img src="">
-                {% if user.is_authenticated %}
-                    <h1>{{ user.get_username }}</h1>
-                {% endif %}
-                <h1>Title</h1>
-                <p>Lorem ipsum</p>
+<div class="container well" id="bodyBox">
+    {% for blog in blogs %}
+        <a href="{% url 'papaya:blogs_view' blog.id%}">
+            <div class="row blog">{{ blog }}
             </div>
-        </div>
-        <div id="filterBox" class="col-2 container">
-            
-        </div>
-    </div>
+        </a>
+    {% endfor %}
 </div>

@@ -27,17 +27,38 @@
         <ul class="nav navbar-nav navbar-right">
             <li class="dropdown">
                 <a class="dropdown-toggle" href="#" data-toggle="dropdown">
+                {% if user.is_authenticated %}
+                    {% if user.first_name %}
+                        {{ user.first_name }}
+                    {% else %}
+                        {{ user.username }}
+                    {% endif %}
+                    <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-right">
+                        <li>
+                            <a href="{% url 'papaya:profile' %}">My profile</a>
+                        </li>
+                        <li>
+                            <a href="{% url 'papaya:blogs' %}">My blogs</a>
+                        </li>
+                        <li>
+                            <a href="{% url 'papaya:profile_logout' %}">Logout</a>
+                        </li>
+                    </ul>
+                {% else %}
                     Account
-                <span class="caret"></span>
-                </a>
-                <ul class="dropdown-menu dropdown-menu-right">
-                    <li>
-                        <a href="#">Sign in</a>
-                    </li>
-                    <li>
-                        <a href="{% url 'papaya:registration' %}">Create Account</a>
-                    </li>
-                </ul>
+                    <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-right">
+                        <li>
+                            <a href="#">Sign in</a>
+                        </li>
+                        <li>
+                            <a href="{% url 'papaya:profile_create' %}">Create Account</a>
+                        </li>
+                    </ul>
+                {% endif %}
             </li>
         </ul>
         <form class="navbar-form navbar-right" action="#">
@@ -55,7 +76,7 @@
 <div class="container well" id="bodyBox">
 
     {% if error %}
-    <p>ERROR</p>
+    <p style="font-color:red">Invalid username or password</p>
     {% endif %}
     <div class="row">
         <form name="loginUser" method="post" novalidate>

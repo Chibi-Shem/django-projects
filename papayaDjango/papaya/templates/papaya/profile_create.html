@@ -39,7 +39,7 @@
                     </a>
                     <ul class="dropdown-menu dropdown-menu-right">
                         <li>
-                            <a href="#">My profile</a>
+                            <a href="{% url 'papaya:profile' %}">My profile</a>
                         </li>
                         <li>
                             <a href="{% url 'papaya:blogs' %}">My blogs</a>
@@ -57,7 +57,7 @@
                             <a href="{% url 'papaya:profile_login' %}">Sign in</a>
                         </li>
                         <li>
-                            <a href="{% url 'papaya:profile_create' %}">Create Account</a>
+                            <a href="#">Create Account</a>
                         </li>
                     </ul>
                 {% endif %}
@@ -77,11 +77,11 @@
 <br>
 <div class="container well" id="bodyBox">
     <div class="row">
-        <h1>{{ user.username }}'s profile</h1>
+        <h1>Your profile</h1>
     </div>
     <br>
     <div class="row">
-        <div class="col-sm-3 container">
+        <div class="col-sm-4 container">
             <div class="row">
                 <img src="{% static 'papaya/images/anon.jpeg' %}">
             </div>
@@ -90,9 +90,18 @@
             </div>
         </div>
         <div class="col-sm-7 container">
-            <h2>{{ user.first_name|add:" "|add:user.last_name }}</h2>
-            <h3><i>{{ user.email }}</i></h3>
+            <form method="post" novalidate>
+                {% csrf_token %}
+                {% for field in form %}
+                    <div class="form-group">
+                        {{ field.label }}
+                        {{ field.errors }}
+                        {{ field }}
+                    </div>
+                {% endfor %}
+                <br>
+                <button class="btn btn-default" type="submit">Create</button>
+            </form>
         </div>
-        <a class="btn btn-default" href="{% url 'papaya:profile_edit' %}">Edit</a>
     </div>
 </div>

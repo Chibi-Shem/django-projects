@@ -19,6 +19,9 @@
         background-color: white;
         padding: 20px 80px 60px 80px;
     }
+    .blog:hover{
+        background-color: lightgrey;
+    }
 </style>
 
 <nav class="navbar navbar-fixed-top">
@@ -39,10 +42,10 @@
                     </a>
                     <ul class="dropdown-menu dropdown-menu-right">
                         <li>
-                            <a href="#">My profile</a>
+                            <a href="{% url 'papaya:profile' %}">My profile</a>
                         </li>
                         <li>
-                            <a href="{% url 'papaya:blogs' %}">My blogs</a>
+                            <a href="#">My blogs</a>
                         </li>
                         <li>
                             <a href="{% url 'papaya:profile_logout' %}">Logout</a>
@@ -77,22 +80,13 @@
 <br>
 <div class="container well" id="bodyBox">
     <div class="row">
-        <h1>{{ user.username }}'s profile</h1>
+        <a class="btn btn-default" href="{% url 'papaya:blogs_create' %}">Add blog</a>
     </div>
+    {% for blog in blogs %}
+        <a href="{% url 'papaya:blogs_view' blog.id%}">
+            <div class="row blog">{{ blog }}
+            </div>
+        </a>
+    {% endfor %}
     <br>
-    <div class="row">
-        <div class="col-sm-3 container">
-            <div class="row">
-                <img src="{% static 'papaya/images/anon.jpeg' %}">
-            </div>
-            <div class="row">
-                <button class="btn btn-default" type="button">Change</button>
-            </div>
-        </div>
-        <div class="col-sm-7 container">
-            <h2>{{ user.first_name|add:" "|add:user.last_name }}</h2>
-            <h3><i>{{ user.email }}</i></h3>
-        </div>
-        <a class="btn btn-default" href="{% url 'papaya:profile_edit' %}">Edit</a>
-    </div>
 </div>
