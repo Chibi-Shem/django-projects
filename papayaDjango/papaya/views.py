@@ -103,34 +103,28 @@ def blogs_create(request):
 
 def blogs_view(request, blog_id):
     """Displays the blog's detail page"""
+    blog = Blog.objects.get(id=blog_id)
+    if request.method=='POST':
+        if request.POST['action'] == 'edit':
+            form = BlogForm(initial={'title':blog.title, 'author':request.user,
+                                     'date_created':blog.date_created,
+                                     'date_updated':datetime.datetime.now(),
+                                     'category':blog.category, 'content':blog.content
+                                    })
+            return render(request, 'papaya/blogs_create.html', {'form':form})
+        elif request.POST['action'] == 'delete':
+            blog.delete()
+            return redirect(reverse('papaya:blogs'))
+        elif request.POST['action'] == 'done':
+            form = BlogForm(request.POST)
+            if form.is_valid():
+                blog.title = form.cleaned_data['title']
+                blog.author = form.cleaned_data['author']
+                blog.category = form.cleaned_data['category']
+                blog.date_updated = form.cleaned_data['date_updated']
+                blog.content = form.cleaned_data['content']
+                blog.save(update_fields=['title', 'author',
+                                         'category', 'date_updated', 'content'])
+                return redirect(reverse('papaya:blogs_view', args=(blog_id,)))
     return render(request, 'papaya/blogs_view.html',
                  {'blog':Blog.objects.get(id=blog_id)})
-
-
-def blogs_edit(request, blog_id):
-    """Displays the blog's edit page"""
-    blog = Blog.objects.get(id=blog_id)
-    form = BlogForm(initial={'title':blog.title, 'author':request.user,
-                             'date_created':blog.date_created,
-                             'date_updated':datetime.datetime.now(),
-                             'category':blog.category, 'content':blog.content
-                            })
-    if request.method=='POST':
-        form = BlogForm(request.POST)
-        if form.is_valid():
-            blog.title = form.cleaned_data['title']
-            blog.author = form.cleaned_data['author']
-            blog.category = form.cleaned_data['category']
-            blog.date_updated = form.cleaned_data['date_updated']
-            blog.content = form.cleaned_data['content']
-            blog.save(update_fields=['title', 'author',
-                                     'category', 'date_updated', 'content'])
-            return redirect(reverse('papaya:blogs_view', args=(blog_id,)))
-    return render(request, 'papaya/blogs_create.html', {'form':form})
-
-
-def blogs_delete(request, blog_id):
-    """Deletes the current blog"""
-    blog = Blog.objects.get(id=blog_id)
-    blog.delete()
-    return redirect(reverse('papaya:blogs'))
