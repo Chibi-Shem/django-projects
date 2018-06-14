@@ -39,6 +39,9 @@
                     </a>
                     <ul class="dropdown-menu dropdown-menu-right">
                         <li>
+                            <a href="{% url 'papaya:listing' %}">Home</a>
+                        </li>
+                        <li>
                             <a href="#">My profile</a>
                         </li>
                         <li>
@@ -53,6 +56,9 @@
                     <span class="caret"></span>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-right">
+                        <li>
+                            <a href="{% url 'papaya:listing' %}">Home</a>
+                        </li>
                         <li>
                             <a href="{% url 'papaya:profile_login' %}">Sign in</a>
                         </li>
@@ -77,7 +83,7 @@
 <br>
 <div class="container well" id="bodyBox">
     <div class="row">
-        <h1>{{ user.username }}'s profile</h1>
+        <h1>{{ profile.username }}'s profile</h1>
     </div>
     <br>
     <div class="row">
@@ -85,14 +91,18 @@
             <div class="row">
                 <img src="{% static 'papaya/images/anon.jpeg' %}">
             </div>
+            {% if user.id == profile.id %}
             <div class="row">
                 <button class="btn btn-default" type="button">Change</button>
             </div>
+            {% endif %}
         </div>
         <div class="col-sm-7 container">
-            <h2>{{ user.first_name|add:" "|add:user.last_name }}</h2>
-            <h3><i>{{ user.email }}</i></h3>
+            <h2>{{ profile.first_name|add:" "|add:profile.last_name }}</h2>
+            <h3><i>{{ profile.email }}</i></h3>
+            {% if user.id == profile.id %}
+            <a class="btn btn-default" href="{% url 'papaya:profile_edit' %}">Edit</a>
+            {% endif %}
         </div>
-        <a class="btn btn-default" href="{% url 'papaya:profile_edit' %}">Edit</a>
     </div>
 </div>

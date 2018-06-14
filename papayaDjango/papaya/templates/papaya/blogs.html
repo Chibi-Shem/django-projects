@@ -42,7 +42,10 @@
                     </a>
                     <ul class="dropdown-menu dropdown-menu-right">
                         <li>
-                            <a href="{% url 'papaya:profile' %}">My profile</a>
+                            <a href="{% url 'papaya:listing' %}">Home</a>
+                        </li>
+                        <li>
+                            <a href="{% url 'papaya:profile' user.id %}">My profile</a>
                         </li>
                         <li>
                             <a href="#">My blogs</a>
@@ -56,6 +59,9 @@
                     <span class="caret"></span>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-right">
+                        <li>
+                            <a href="{% url 'papaya:listing' %}">Home</a>
+                        </li>
                         <li>
                             <a href="{% url 'papaya:profile_login' %}">Sign in</a>
                         </li>
@@ -79,6 +85,9 @@
 <br>
 <br>
 <div class="container well" id="bodyBox">
+    <div class="row">
+        <h1>{{ user.username }}'s Blogs</h1>
+    </div>
     <div class="row">
         <a class="btn btn-default" href="{% url 'papaya:blogs_create' %}">Add blog</a>
     </div>

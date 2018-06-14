@@ -39,10 +39,13 @@
                     </a>
                     <ul class="dropdown-menu dropdown-menu-right">
                         <li>
-                            <a href="{% url 'papaya:profile' %}">My profile</a>
+                            <a href="{% url 'papaya:listing' %}">Home</a>
                         </li>
                         <li>
-                            <a href="#">My blogs</a>
+                            <a href="{% url 'papaya:profile' user.id %}">My profile</a>
+                        </li>
+                        <li>
+                            <a href="{% url 'papaya:blogs' %}">My blogs</a>
                         </li>
                         <li>
                             <a href="{% url 'papaya:profile_logout' %}">Logout</a>
@@ -53,6 +56,9 @@
                     <span class="caret"></span>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-right">
+                        <li>
+                            <a href="{% url 'papaya:listing' %}">Home</a>
+                        </li>
                         <li>
                             <a href="{% url 'papaya:profile_login' %}">Sign in</a>
                         </li>
@@ -104,6 +110,10 @@
                     {{ form.category.label }}
                     {{ form.category.errors }}
                     {{ form.category }}
+                </div>
+                <div class="form-group">
+                    {{ form.date_created.as_hidden }}
+                    {{ form.date_updated.as_hidden }}
                 </div>
                 <div class="form-group">
                     {{ form.content.label }}

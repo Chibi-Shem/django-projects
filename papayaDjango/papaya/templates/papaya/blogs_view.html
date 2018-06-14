@@ -39,10 +39,13 @@
                     </a>
                     <ul class="dropdown-menu dropdown-menu-right">
                         <li>
-                            <a href="{% url 'papaya:profile' %}">My profile</a>
+                            <a href="{% url 'papaya:listing' %}">Home</a>
                         </li>
                         <li>
-                            <a href="#">My blogs</a>
+                            <a href="{% url 'papaya:profile' user.id %}">My profile</a>
+                        </li>
+                        <li>
+                            <a href="{% url 'papaya:blogs' %}">My blogs</a>
                         </li>
                         <li>
                             <a href="{% url 'papaya:profile_logout' %}">Logout</a>
@@ -53,6 +56,9 @@
                     <span class="caret"></span>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-right">
+                        <li>
+                            <a href="{% url 'papaya:listing' %}">Home</a>
+                        </li>
                         <li>
                             <a href="{% url 'papaya:profile_login' %}">Sign in</a>
                         </li>
@@ -89,21 +95,33 @@
             </div>
         </div>
         <div class="col-sm-5 container">
-            <div class="form-group">
-                {{ blog.title }}
+            <div class="row">
+                <h1>{{ blog.title }}</h1>
             </div>
-            <div class="form-group">
-                {{ blog.author.username }}
+            <div class="row">
+                <h3><i>By: <a href="{% url 'papaya:profile' blog.author.id%}">{{ blog.author.username }}</a></i></h3>
             </div>
-            <div class="form-group">
+            <br>
+            <div class="row">
                 {{ blog.category }}
             </div>
-            <div class="form-group">
+            <br>
+            <div class="row">
+                <p><i>Created:
+                {{ blog.date_created }}
+                </i></p>
+                <p><i>Updated:
+                {{ blog.date_updated }}
+                </i></p>
+            </div>
+            <br>
+            <div class="row">
                 {{ blog.content }}
             </div>
+            <br>
             {% if user.is_authenticated and blog.author == user %}
                 <a class="btn btn-default" href="{% url 'papaya:blogs_edit' blog.id%}">Edit</a>
-                <a class="btn btn-default" href="{% url 'papaya:blogs_delete' blog.id%}">Delete</button>
+                <a class="btn btn-default" href="{% url 'papaya:blogs_delete' blog.id%}">Delete</a>
             {% endif %}
         </div>
     </div>

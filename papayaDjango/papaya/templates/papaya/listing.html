@@ -41,7 +41,10 @@
                     </a>
                     <ul class="dropdown-menu dropdown-menu-right">
                         <li>
-                            <a href="{% url 'papaya:profile' %}">My profile</a>
+                            <a href="#">Home</a>
+                        </li>
+                        <li>
+                            <a href="{% url 'papaya:profile' user.id %}">My profile</a>
                         </li>
                         <li>
                             <a href="{% url 'papaya:blogs' %}">My blogs</a>
@@ -55,6 +58,9 @@
                     <span class="caret"></span>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-right">
+                        <li>
+                            <a href="#">Home</a>
+                        </li>
                         <li>
                             <a href="{% url 'papaya:profile_login' %}">Sign in</a>
                         </li>
