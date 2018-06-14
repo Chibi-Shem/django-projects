@@ -47,7 +47,7 @@ def profile_edit(request):
             # password = form.cleaned_data['password']
             # user = authenticate(request, username=username, password=password)
             # login(request, user)
-            return redirect(reverse('papaya:profile'))
+            return redirect(reverse('papaya:profile', args=(user.id,)))
     return render(request, 'papaya/profile_edit.html', {'form':form})
 
 
