@@ -1,7 +1,6 @@
 from django import forms
-from django.contrib.auth.models import User
 from django.forms import Form, ModelForm
-from .models import Blog
+from .models import Blog, User
 
 class UserRegistrationForm(Form):
     """Registration form for users"""
@@ -36,12 +35,20 @@ class UserRegistrationForm(Form):
     def save(self):
         username = self.cleaned_data['username']
         password = self.cleaned_data['password']
-        user = User.objects.create_user(username, password)
+        # user = User.objects.create_user(username, password)
+        user = User.objects.create(username = username)
+        user.set_password(password)
+        user.save()
+        import pdb; pdb.set_trace()
         return user
 
 
-class UserEditForm(Form):
+class UserEditForm(ModelForm):
     """Profile editing form for users"""
+    class Meta:
+        model = User
+        fields = ['image']
+
     username = forms.CharField(widget=forms.TextInput(),
                                label="Username:", max_length=100)
     email = forms.EmailField(widget=forms.EmailInput, required=False,
@@ -65,6 +72,7 @@ class UserEditForm(Form):
         user.email = self.cleaned_data['email'].lower()
         user.first_name = self.cleaned_data['fname']
         user.last_name = self.cleaned_data['lname']
+        user.image = self.cleaned_data['image']
         user.save()
         return user
 

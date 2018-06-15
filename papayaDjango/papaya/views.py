@@ -25,9 +25,12 @@ def profile_create(request):
         form = UserRegistrationForm(request.POST)
         if form.is_valid():
             form.save()
-            username = request.POST['username']
-            password = request.POST['password']
-            user = authenticate(request, username=username, password=password)
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+            import pdb; pdb.set_trace()
+            user = authenticate(request,
+                                username=username,
+                                password=password)
             login(request, user)
             return redirect(reverse('papaya:listing'))
     return render(request, 'papaya/profile_create.html', {'form':form})

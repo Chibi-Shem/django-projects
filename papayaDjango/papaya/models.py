@@ -1,5 +1,18 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, AbstractBaseUser
+
+
+class User(AbstractBaseUser):
+    """A custom user model"""
+    image = models.ImageField(
+                upload_to = 'papaya/static/papaya/images',
+                default = 'papaya/static/papaya/images/anon.jpeg')
+    username = models.CharField(max_length=200)
+    email = models.EmailField(max_length=300)
+    fname = models.CharField(max_length=200)
+    lname = models.CharField(max_length=200)
+
+    USERNAME_FIELD = 'username'
 
 
 class Category(models.Model):
