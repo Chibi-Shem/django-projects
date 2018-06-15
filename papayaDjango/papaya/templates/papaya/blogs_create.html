@@ -84,17 +84,18 @@
 <div class="container well" id="bodyBox">
     <br>
     <div class="row">
-        <div class="col-sm-5 container">
-            <div class="row">
-                <img src="{% static 'papaya/images/empty.png' %}">
+        <form method="post" enctype="multipart/form-data" novalidate>
+            {% csrf_token %}
+            <div class="col-sm-5 container">
+                <div class="row">
+                    <img src="/{{ blog_image }}">
+                </div>
+                <div class="row">
+                    {{ form.image.errors }}
+                    {{ form.image }}
+                </div>
             </div>
-            <div class="row">
-                <button class="btn btn-default" type="button">Change</button>
-            </div>
-        </div>
-        <div class="col-sm-5 container">
-            <form method="post" novalidate>
-                {% csrf_token %}
+            <div class="col-sm-5 container">
                 <div class="form-group">
                     {{ form.title.label }}
                     {{ form.title.errors }}
@@ -112,7 +113,9 @@
                     {{ form.category }}
                 </div>
                 <div class="form-group">
+                    {{ form.date_created.errors }}
                     {{ form.date_created.as_hidden }}
+                    {{ form.date_updated.errors }}
                     {{ form.date_updated.as_hidden }}
                 </div>
                 <div class="form-group">
@@ -122,7 +125,7 @@
                     {{ form.content }}
                 </div>
                 <button name="action" class="btn btn-default" type="submit" value="done">Done</button>
-            </form>
-        </div>
+            </div>
+        </form>
     </div>
 </div>

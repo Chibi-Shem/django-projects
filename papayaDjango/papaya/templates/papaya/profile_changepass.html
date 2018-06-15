@@ -89,13 +89,21 @@
     <div class="row">
         <form method="post" novalidate>
             {% csrf_token %}
+            {% if error %}
+            <p style="font-color:red">Invalid password</p>
+            {% endif %}
+            <div class="form-group">
+                {{ form.password_old.label }}
+                {{ form.password_old.errors }}
+                {{ form.password_old }}
+                {{ form.username.as_hidden }}
+            </div>
             <div class="form-group">
                 {{ form.password.label }}
                 {{ form.password.errors }}
                 {{ form.password }}
             </div>
             <div class="form-group">
-                {{ form.password2.label }}
                 {{ form.password2.errors }}
                 {{ form.password2 }}
             </div>

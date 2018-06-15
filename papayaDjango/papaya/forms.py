@@ -69,50 +69,6 @@ class UserEditForm(Form):
         return user
 
 
-class UserPasswordForm(Form):
-    """Profile editing form for users"""
-    username = forms.CharField(widget=forms.TextInput(),
-                               label="Username:", max_length=100)
-    password = forms.CharField(widget=forms.PasswordInput,
-                               label="Password:", max_length=100)
-    password2 = forms.CharField(widget=forms.PasswordInput,
-                                label="", max_length=100)
-    email = forms.EmailField(widget=forms.EmailInput, required=False,
-                             label="Email:", max_length=200)
-    fname = forms.CharField(widget=forms.TextInput, required=False,
-                            label="First name:", max_length=100)
-    lname = forms.CharField(widget=forms.TextInput, required=False,
-                            label="Last name:", max_length=100)
-
-    username.widget.attrs.update({'class':'form-control',
-                                  'placeholder':'Enter username'})
-    password.widget.attrs.update({'class':'form-control',
-                                  'placeholder':'Enter password'})
-    password2.widget.attrs.update({'class':'form-control',
-                                   'placeholder':'Confirm password'})
-    email.widget.attrs.update({'class':'form-control',
-                               'placeholder':'Enter email'})
-    fname.widget.attrs.update({'class':'form-control',
-                               'placeholder':'Enter first name'})
-    lname.widget.attrs.update({'class':'form-control',
-                               'placeholder':'Enter last name'})
-
-    def clean_password2(self):
-        password = self.cleaned_data['password']
-        password2 = self.cleaned_data['password2']
-        if password != password2:
-            raise forms.ValidationError("Password mismatch")
-        return password
-
-    def update(self):
-        user = User.objects.get(username=self.cleaned_data['username'])
-        user.set_password(self.cleaned_data['password'])
-        user.first_name = self.cleaned_data['fname']
-        user.last_name = self.cleaned_data['lname']
-        user.save()
-        return user
-
-
 class UserLoginForm(Form):
     """Login form for users"""
     username = forms.CharField(widget=forms.TextInput(),
@@ -125,11 +81,45 @@ class UserLoginForm(Form):
     password.widget.attrs.update({'class':'form-control',
                                   'placeholder':'Enter password'})
 
+
+class UserChangepassForm(Form):
+    """Change password form for users"""
+    username = forms.CharField(widget=forms.TextInput(),
+                               label="Username:", max_length=100)
+    password_old = forms.CharField(widget=forms.PasswordInput,
+                               label="Current Password:", max_length=100)
+    password = forms.CharField(widget=forms.PasswordInput,
+                               label="New Password:", max_length=100)
+    password2 = forms.CharField(widget=forms.PasswordInput,
+                               label="Password:", max_length=100)
+
+    username.widget.attrs.update({'class':'form-control',
+                                  'placeholder':'Enter username'})
+    password_old.widget.attrs.update({'class':'form-control',
+                                  'placeholder':'Enter current password'})
+    password.widget.attrs.update({'class':'form-control',
+                                  'placeholder':'Enter new password'})
+    password2.widget.attrs.update({'class':'form-control',
+                                  'placeholder':'Confirm new password'})
+
+    def clean_password2(self):
+        password = self.cleaned_data['password']
+        password2 = self.cleaned_data['password2']
+        if password != password2:
+            raise forms.ValidationError("Password mismatch")
+        return password
+
+    def update(self):
+        user = User.objects.get(username=self.cleaned_data['username'])
+        user.set_password(self.cleaned_data['password'])
+        user.save()
+        return user
+
+
 class BlogForm(ModelForm):
     """Blog form for users"""
 
     class Meta:
         model = Blog
-        fields = ['title', 'author', 'category',
-                  'date_created', 'date_updated',
-                  'content']
+        fields = ['image', 'title', 'author', 'category',
+                  'date_created', 'date_updated', 'content']

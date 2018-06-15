@@ -102,6 +102,7 @@
             <h3><i>{{ profile.email }}</i></h3>
             {% if user.id == profile.id %}
             <a class="btn btn-default" href="{% url 'papaya:profile_edit' %}">Edit</a>
+            <a class="btn btn-default" href="{% url 'papaya:profile_changepass' %}">Change password</a>
             {% endif %}
         </div>
     </div>

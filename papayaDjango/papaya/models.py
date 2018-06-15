@@ -12,6 +12,8 @@ class Category(models.Model):
 
 class Blog(models.Model):
     """A blog model"""
+    image = models.ImageField(upload_to = 'papaya/static/papaya/images',
+                              default = 'papaya/static/papaya/images/empty.png')
     title = models.CharField(max_length=200)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
