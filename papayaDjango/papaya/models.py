@@ -1,18 +1,15 @@
 from django.db import models
-from django.contrib.auth.models import User, AbstractBaseUser
+from django.contrib.auth.models import User
 
 
-class User(AbstractBaseUser):
+class PapayaUser(models.Model):
     """A custom user model"""
+    user = models.OneToOneField(User, on_delete = models.CASCADE)
     image = models.ImageField(
                 upload_to = 'papaya/static/papaya/images',
                 default = 'papaya/static/papaya/images/anon.jpeg')
-    username = models.CharField(max_length=200)
-    email = models.EmailField(max_length=300)
-    fname = models.CharField(max_length=200)
-    lname = models.CharField(max_length=200)
-
-    USERNAME_FIELD = 'username'
+    def __str__(self):
+        return self.user.username
 
 
 class Category(models.Model):

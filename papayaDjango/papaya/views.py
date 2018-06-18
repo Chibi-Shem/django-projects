@@ -6,7 +6,7 @@ from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout
 from .forms import UserRegistrationForm, UserEditForm
 from .forms import UserLoginForm, UserChangepassForm, BlogForm
-from .models import Blog
+from .models import Blog, PapayaUser
 import datetime
 
 
@@ -27,7 +27,7 @@ def profile_create(request):
             form.save()
             username = form.cleaned_data['username']
             password = form.cleaned_data['password']
-            import pdb; pdb.set_trace()
+            # import pdb; pdb.set_trace()
             user = authenticate(request,
                                 username=username,
                                 password=password)
@@ -38,17 +38,22 @@ def profile_create(request):
 
 def profile_edit(request):
     """Displays the user's edit page"""
-    user = User.objects.get(username=request.user.username)
+    papayaUser = PapayaUser.objects.get(user=request.user)
     form = UserEditForm(
-                initial={'username':user.username, 'email':user.email,
-                         'fname':user.first_name, 'lname':user.last_name,
+                initial={'image': papayaUser.image,
+                         'username':papayaUser.user.username,
+                         'email':papayaUser.user.email,
+                         'fname':papayaUser.user.first_name,
+                         'lname':papayaUser.user.last_name,
                         })
     if request.method == 'POST':
-        form = UserEditForm(request.POST)
+        form = UserEditForm(request.POST, request.FILES)
         if form.is_valid():
             form.update()
-            return redirect(reverse('papaya:profile', args=(user.id,)))
-    return render(request, 'papaya/profile_edit.html', {'form':form})
+            return redirect(reverse('papaya:profile',
+                                args=(papayaUser.user.id,)))
+    return render(request, 'papaya/profile_edit.html',
+                  {'form':form, 'profile_image':papayaUser.image.url[7:]})
 
 
 def profile_changepass(request):
@@ -106,8 +111,11 @@ def profile_logout(request):
 
 def profile(request, profile_id):
     """Displays the user's profile page"""
+    user = User.objects.get(id=profile_id)
+    papayaUser = PapayaUser.objects.get(user=user)
     return render(request, 'papaya/profile.html',
-                  {'profile':User.objects.get(id=profile_id)})
+                  {'profile':papayaUser,
+                   'profile_image':papayaUser.image.url[7:]})
 
 
 def blogs(request):
@@ -162,5 +170,4 @@ def blogs_view(request, blog_id):
                                          'content'])
                 return redirect(reverse('papaya:blogs_view', args=(blog_id,)))
     return render(request, 'papaya/blogs_view.html',
-                 {'blog':Blog.objects.get(id=blog_id),
-                  'blog_image':blog.image.url[7:]})
+                 {'blog':blog, 'blog_image':blog.image.url[7:]})
