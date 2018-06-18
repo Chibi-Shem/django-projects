@@ -4,6 +4,7 @@ from django.http import HttpResponseRedirect
 from django.contrib import messages
 from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from .forms import UserRegistrationForm, UserEditForm
 from .forms import UserLoginForm, UserChangepassForm, BlogForm
 from .models import Blog, PapayaUser
@@ -123,22 +124,19 @@ def blogs(request):
     return render(request, 'papaya/blogs.html',
                  {'blogs':Blog.objects.filter(author=request.user)})
 
-
+@login_required()
 def blogs_create(request):
     """Displays the create blogs page"""
-    if request.user.is_authenticated:
-        form = BlogForm(initial={'author':request.user,
-                                 'date_created':datetime.datetime.now(),
-                                 'date_updated':datetime.datetime.now()})
-        if request.method=='POST':
-            form = BlogForm(request.POST, request.FILES)
-            if form.is_valid():
-                form.save()
-                return redirect(reverse('papaya:blogs'))
-        return render(request, 'papaya/blogs_create.html',
-                     {'form':form, 'blog_image':'static/papaya/images/empty.png'})
-    else:
-        return redirect(reverse('papaya:profile_login'))
+    form = BlogForm(initial={'author':request.user,
+                             'date_created':datetime.datetime.now(),
+                             'date_updated':datetime.datetime.now()})
+    if request.method=='POST':
+        form = BlogForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect(reverse('papaya:blogs'))
+    return render(request, 'papaya/blogs_create.html',
+                 {'form':form, 'blog_image':'static/papaya/images/empty.png'})
 
 
 def blogs_view(request, blog_id):
