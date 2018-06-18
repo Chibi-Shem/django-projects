@@ -75,7 +75,9 @@ class UserEditForm(ModelForm):
         papayaUser.user.first_name = self.cleaned_data['fname']
         papayaUser.user.last_name = self.cleaned_data['lname']
         papayaUser.image = self.cleaned_data['image']
+        # import pdb; pdb.set_trace()
         papayaUser.save()
+        papayaUser.user.save()
 
 
 class UserLoginForm(Form):

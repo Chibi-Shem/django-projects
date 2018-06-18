@@ -126,7 +126,6 @@ def blogs(request):
 
 def blogs_create(request):
     """Displays the create blogs page"""
-    # import pdb; pdb.set_trace()
     if request.user.is_authenticated:
         form = BlogForm(initial={'author':request.user,
                                  'date_created':datetime.datetime.now(),
@@ -144,7 +143,7 @@ def blogs_create(request):
 
 def blogs_view(request, blog_id):
     """Displays the blog's detail page"""
-    blog = Blog.objects.get(id=blog_id)
+    blog = Blog.objects.get(id=blog_id, author=request.user)
     if request.method=='POST':
         if request.POST['action'] == 'edit':
             form = BlogForm(initial={'image':blog.image,
