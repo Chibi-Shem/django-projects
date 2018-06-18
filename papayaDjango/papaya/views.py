@@ -126,16 +126,20 @@ def blogs(request):
 
 def blogs_create(request):
     """Displays the create blogs page"""
-    form = BlogForm(initial={'author':request.user,
-                             'date_created':datetime.datetime.now(),
-                             'date_updated':datetime.datetime.now()})
-    if request.method=='POST':
-        form = BlogForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()
-            return redirect(reverse('papaya:blogs'))
-    return render(request, 'papaya/blogs_create.html',
-                 {'form':form, 'blog_image':'static/papaya/images/empty.png'})
+    # import pdb; pdb.set_trace()
+    if request.user.is_authenticated:
+        form = BlogForm(initial={'author':request.user,
+                                 'date_created':datetime.datetime.now(),
+                                 'date_updated':datetime.datetime.now()})
+        if request.method=='POST':
+            form = BlogForm(request.POST, request.FILES)
+            if form.is_valid():
+                form.save()
+                return redirect(reverse('papaya:blogs'))
+        return render(request, 'papaya/blogs_create.html',
+                     {'form':form, 'blog_image':'static/papaya/images/empty.png'})
+    else:
+        return redirect(reverse('papaya:profile_login'))
 
 
 def blogs_view(request, blog_id):
