@@ -8,6 +8,7 @@ class PapayaUser(models.Model):
     image = models.ImageField(
                 upload_to = 'papaya/static/papaya/images',
                 default = 'papaya/static/papaya/images/anon.jpeg')
+    
     def __str__(self):
         return self.user.username
 

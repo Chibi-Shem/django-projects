@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
 from django.contrib import messages
@@ -141,34 +141,37 @@ def blogs_create(request):
 
 def blogs_view(request, blog_id):
     """Displays the blog's detail page"""
-    blog = Blog.objects.get(id=blog_id, author=request.user)
-    if request.method=='POST':
-        if request.POST['action'] == 'edit':
-            form = BlogForm(initial={'image':blog.image,
-                                     'title':blog.title,
-                                     'author':request.user,
-                                     'date_created':blog.date_created,
-                                     'date_updated':datetime.datetime.now(),
-                                     'category':blog.category,
-                                     'content':blog.content
-                                    })
-            return render(request, 'papaya/blogs_create.html',
-                         {'form':form, 'blog_image':blog.image.url[7:]})
-        elif request.POST['action'] == 'delete':
-            blog.delete()
-            return redirect(reverse('papaya:blogs'))
-        elif request.POST['action'] == 'done':
-            form = BlogForm(request.POST, request.FILES)
-            if form.is_valid():
-                blog.image = form.cleaned_data['image']
-                blog.title = form.cleaned_data['title']
-                blog.author = form.cleaned_data['author']
-                blog.category = form.cleaned_data['category']
-                blog.date_updated = form.cleaned_data['date_updated']
-                blog.content = form.cleaned_data['content']
-                blog.save(update_fields=['image', 'title', 'author',
-                                         'category', 'date_updated',
-                                         'content'])
-                return redirect(reverse('papaya:blogs_view', args=(blog_id,)))
+    try:
+        blog = get_object_or_404(Blog, id=blog_id, author=request.user)
+        if request.method=='POST':
+            if request.POST['action'] == 'edit':
+                form = BlogForm(initial={'image':blog.image,
+                                         'title':blog.title,
+                                         'author':request.user,
+                                         'date_created':blog.date_created,
+                                         'date_updated':datetime.datetime.now(),
+                                         'category':blog.category,
+                                         'content':blog.content
+                                        })
+                return render(request, 'papaya/blogs_create.html',
+                             {'form':form, 'blog_image':blog.image.url[7:]})
+            elif request.POST['action'] == 'delete':
+                blog.delete()
+                return redirect(reverse('papaya:blogs'))
+            elif request.POST['action'] == 'done':
+                form = BlogForm(request.POST, request.FILES)
+                if form.is_valid():
+                    blog.image = form.cleaned_data['image']
+                    blog.title = form.cleaned_data['title']
+                    blog.author = form.cleaned_data['author']
+                    blog.category = form.cleaned_data['category']
+                    blog.date_updated = form.cleaned_data['date_updated']
+                    blog.content = form.cleaned_data['content']
+                    blog.save(update_fields=['image', 'title', 'author',
+                                             'category', 'date_updated',
+                                             'content'])
+                    return redirect(reverse('papaya:blogs_view', args=(blog_id,)))
+    except:
+        blog = get_object_or_404(Blog, id=blog_id)
     return render(request, 'papaya/blogs_view.html',
                  {'blog':blog, 'blog_image':blog.image.url[7:]})
