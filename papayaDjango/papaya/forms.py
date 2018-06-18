@@ -133,3 +133,15 @@ class BlogForm(ModelForm):
         model = Blog
         fields = ['image', 'title', 'author', 'category',
                   'date_created', 'date_updated', 'content']
+
+    def update(self, blog_id):
+        blog = Blog.objects.get(id=blog_id)
+        blog.image = self.cleaned_data['image']
+        blog.title = self.cleaned_data['title']
+        blog.author = self.cleaned_data['author']
+        blog.category = self.cleaned_data['category']
+        blog.date_updated = self.cleaned_data['date_updated']
+        blog.content = self.cleaned_data['content']
+        blog.save(update_fields=['image', 'title', 'author',
+                                 'category', 'date_updated',
+                                 'content'])

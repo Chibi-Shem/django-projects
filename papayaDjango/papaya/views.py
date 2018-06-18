@@ -28,7 +28,6 @@ def profile_create(request):
             form.save()
             username = form.cleaned_data['username']
             password = form.cleaned_data['password']
-            # import pdb; pdb.set_trace()
             user = authenticate(request,
                                 username=username,
                                 password=password)
@@ -50,6 +49,9 @@ def profile_edit(request):
     if request.method == 'POST':
         form = UserEditForm(request.POST, request.FILES)
         if form.is_valid():
+            # import pdb; pdb.set_trace()
+            if not request.FILES:
+                form.cleaned_data['image'] = papayaUser.image
             form.update()
             return redirect(reverse('papaya:profile',
                                 args=(papayaUser.user.id,)))
@@ -124,6 +126,7 @@ def blogs(request):
     return render(request, 'papaya/blogs.html',
                  {'blogs':Blog.objects.filter(author=request.user)})
 
+
 @login_required()
 def blogs_create(request):
     """Displays the create blogs page"""
@@ -161,16 +164,11 @@ def blogs_view(request, blog_id):
             elif request.POST['action'] == 'done':
                 form = BlogForm(request.POST, request.FILES)
                 if form.is_valid():
-                    blog.image = form.cleaned_data['image']
-                    blog.title = form.cleaned_data['title']
-                    blog.author = form.cleaned_data['author']
-                    blog.category = form.cleaned_data['category']
-                    blog.date_updated = form.cleaned_data['date_updated']
-                    blog.content = form.cleaned_data['content']
-                    blog.save(update_fields=['image', 'title', 'author',
-                                             'category', 'date_updated',
-                                             'content'])
-                    return redirect(reverse('papaya:blogs_view', args=(blog_id,)))
+                    if not request.FILES:
+                        form.cleaned_data['image'] = blog.image
+                    form.update(blog_id)
+                    return redirect(reverse('papaya:blogs_view',
+                                    args=(blog_id,)))
     except:
         blog = get_object_or_404(Blog, id=blog_id)
     return render(request, 'papaya/blogs_view.html',
