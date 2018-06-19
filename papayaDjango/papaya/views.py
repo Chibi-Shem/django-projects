@@ -6,17 +6,19 @@ from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from .forms import UserRegistrationForm, UserEditForm
-from .forms import UserLoginForm, UserChangepassForm, BlogForm
+from .forms import UserChangepassForm, BlogForm, UserLoginForm
 from .models import Blog, PapayaUser
-import datetime
 
 
 def listing(request):
     """Displays the list of all blogs"""
     blogs = Blog.objects.all()
+    msg = ''
     if request.method == 'POST':
         blogs = Blog.objects.filter(title__icontains=request.POST['search'])
-    return render(request, 'papaya/listing.html', {'blogs':blogs})
+        if not blogs:
+            msg = 'No results found!'
+    return render(request, 'papaya/listing.html', {'blogs':blogs, 'msg':msg})
 
 
 def profile_create(request):
@@ -49,14 +51,13 @@ def profile_edit(request):
     if request.method == 'POST':
         form = UserEditForm(request.POST, request.FILES)
         if form.is_valid():
-            # import pdb; pdb.set_trace()
             if not request.FILES:
                 form.cleaned_data['image'] = papayaUser.image
             form.update()
             return redirect(reverse('papaya:profile',
                                 args=(papayaUser.user.id,)))
     return render(request, 'papaya/profile_edit.html',
-                  {'form':form, 'profile_image':papayaUser.image.url[7:]})
+            {'form':form, 'profile_image':papayaUser.image})
 
 
 def profile_changepass(request):
@@ -116,9 +117,7 @@ def profile(request, profile_id):
     """Displays the user's profile page"""
     user = User.objects.get(id=profile_id)
     papayaUser = PapayaUser.objects.get(user=user)
-    return render(request, 'papaya/profile.html',
-                  {'profile':papayaUser,
-                   'profile_image':papayaUser.image.url[7:]})
+    return render(request, 'papaya/profile.html', {'profile':papayaUser})
 
 
 def blogs(request):
@@ -130,16 +129,14 @@ def blogs(request):
 @login_required()
 def blogs_create(request):
     """Displays the create blogs page"""
-    form = BlogForm(initial={'author':request.user,
-                             'date_created':datetime.datetime.now(),
-                             'date_updated':datetime.datetime.now()})
+    form = BlogForm(initial={'author':request.user})
     if request.method=='POST':
         form = BlogForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
             return redirect(reverse('papaya:blogs'))
     return render(request, 'papaya/blogs_create.html',
-                 {'form':form, 'blog_image':'static/papaya/images/empty.png'})
+                 {'form':form})
 
 
 def blogs_view(request, blog_id):
@@ -151,13 +148,11 @@ def blogs_view(request, blog_id):
                 form = BlogForm(initial={'image':blog.image,
                                          'title':blog.title,
                                          'author':request.user,
-                                         'date_created':blog.date_created,
-                                         'date_updated':datetime.datetime.now(),
                                          'category':blog.category,
                                          'content':blog.content
                                         })
                 return render(request, 'papaya/blogs_create.html',
-                             {'form':form, 'blog_image':blog.image.url[7:]})
+                             {'form':form, 'blog_image':blog.image})
             elif request.POST['action'] == 'delete':
                 blog.delete()
                 return redirect(reverse('papaya:blogs'))
@@ -171,5 +166,6 @@ def blogs_view(request, blog_id):
                                     args=(blog_id,)))
     except:
         blog = get_object_or_404(Blog, id=blog_id)
+    # import pdb; pdb.set_trace()
     return render(request, 'papaya/blogs_view.html',
-                 {'blog':blog, 'blog_image':blog.image.url[7:]})
+                 {'blog':blog})

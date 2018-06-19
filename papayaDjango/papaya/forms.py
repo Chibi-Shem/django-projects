@@ -58,6 +58,8 @@ class UserEditForm(ModelForm):
                             label="First name:", max_length=100)
     lname = forms.CharField(widget=forms.TextInput, required=False,
                             label="Last name:", max_length=100)
+    image = forms.ImageField(widget=forms.FileInput, required=False,
+                            label="Image:")
 
     username.widget.attrs.update({'class':'form-control',
                                   'placeholder':'Enter username'})
@@ -67,6 +69,7 @@ class UserEditForm(ModelForm):
                                'placeholder':'Enter first name'})
     lname.widget.attrs.update({'class':'form-control',
                                'placeholder':'Enter last name'})
+    image.widget.attrs.update({'class':'form-control'})
 
     def update(self):
         user = User.objects.get(username=self.cleaned_data['username'])
@@ -75,7 +78,6 @@ class UserEditForm(ModelForm):
         papayaUser.user.first_name = self.cleaned_data['fname']
         papayaUser.user.last_name = self.cleaned_data['lname']
         papayaUser.image = self.cleaned_data['image']
-        # import pdb; pdb.set_trace()
         papayaUser.save()
         papayaUser.user.save()
 
@@ -131,17 +133,16 @@ class BlogForm(ModelForm):
 
     class Meta:
         model = Blog
-        fields = ['image', 'title', 'author', 'category',
-                  'date_created', 'date_updated', 'content']
+        fields = ['image', 'title', 'author', 'category', 'content']
 
+    image = forms.ImageField(widget=forms.FileInput, required=False,
+                            label="Image:")
+    
     def update(self, blog_id):
         blog = Blog.objects.get(id=blog_id)
         blog.image = self.cleaned_data['image']
         blog.title = self.cleaned_data['title']
         blog.author = self.cleaned_data['author']
         blog.category = self.cleaned_data['category']
-        blog.date_updated = self.cleaned_data['date_updated']
         blog.content = self.cleaned_data['content']
-        blog.save(update_fields=['image', 'title', 'author',
-                                 'category', 'date_updated',
-                                 'content'])
+        blog.save()

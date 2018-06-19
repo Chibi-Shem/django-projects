@@ -1,92 +1,17 @@
+{% extends "papaya/base.html" %}
 {% load static %}
 
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-
-
-<style>
-    body{
-        background-color: lemonchiffon;
-    }
-    .navbar{
-        background-color: darkorange;
-        box-shadow: 0px 1px 10px grey;
-    }
-    .well{
-        background-color: white;
-        padding: 20px 80px 60px 80px;
-    }
-</style>
-
-<nav class="navbar navbar-fixed-top">
-    <div class="container-fluid">
-        <div class="navbar-header">
-            <a class="navbar-brand" href="{% url 'papaya:listing' %}">Logo</a>
-        </div>
-        <ul class="nav navbar-nav navbar-right">
-            <li class="dropdown">
-                <a class="dropdown-toggle" href="#" data-toggle="dropdown">
-                {% if user.is_authenticated %}
-                    {% if user.first_name %}
-                        {{ user.first_name }}
-                    {% else %}
-                        {{ user.username }}
-                    {% endif %}
-                    <span class="caret"></span>
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-right">
-                        <li>
-                            <a href="{% url 'papaya:listing' %}">Home</a>
-                        </li>
-                        <li>
-                            <a href="{% url 'papaya:profile' user.id %}">My profile</a>
-                        </li>
-                        <li>
-                            <a href="{% url 'papaya:blogs' %}">My blogs</a>
-                        </li>
-                        <li>
-                            <a href="{% url 'papaya:profile_logout' %}">Logout</a>
-                        </li>
-                    </ul>
-                {% else %}
-                    Account
-                    <span class="caret"></span>
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-right">
-                        <li>
-                            <a href="{% url 'papaya:listing' %}">Home</a>
-                        </li>
-                        <li>
-                            <a href="{% url 'papaya:profile_login' %}">Sign in</a>
-                        </li>
-                        <li>
-                            <a href="{% url 'papaya:profile_create' %}">Create Account</a>
-                        </li>
-                    </ul>
-                {% endif %}
-            </li>
-        </ul>
-        <form class="navbar-form navbar-right" action="#">
-            <div class="form-group">
-                <input style="width:300px" class="form-control" type="text" placeholder="search" name="search">
-            </div>
-            <button class="btn" type="submit">S</button>
-        </form>
-    </div>
-</nav>
-<br>
-<br>
-<br>
-<br>
+{% block content %}
 <div class="container well" id="bodyBox">
     <br>
     <div class="row">
         <div class="col-sm-5 container">
             <div class="row">
-                <img src="/{{ blog_image }}">
+                {% if blog.image %}
+                <img src="{{ blog.image.url }}">
+                {% else %}
+                <img src="{% static 'papaya/images/empty.png' %}">
+                {% endif %}
             </div>
         </div>
         <div class="col-sm-5 container">
@@ -124,3 +49,4 @@
         </div>
     </div>
 </div>
+{% endblock %}
