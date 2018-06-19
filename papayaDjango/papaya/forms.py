@@ -1,7 +1,6 @@
 from django import forms
 from django.forms import Form, ModelForm
-from django.contrib.auth.models import User
-from .models import Blog, PapayaUser
+from .models import Blog, User
 
 class UserRegistrationForm(Form):
     """Registration form for users"""
@@ -36,18 +35,15 @@ class UserRegistrationForm(Form):
     def save(self):
         username = self.cleaned_data['username']
         password = self.cleaned_data['password']
-        # user = User.objects.create_user(username, password)
         user = User.objects.create(username = username)
         user.set_password(password)
-        papayaUser = PapayaUser.objects.create(user = user)
         user.save()
-        papayaUser.save()
 
 
 class UserEditForm(ModelForm):
     """Profile editing form for users"""
     class Meta:
-        model = PapayaUser
+        model = User
         fields = ['image']
 
     username = forms.CharField(widget=forms.TextInput(),
@@ -73,13 +69,11 @@ class UserEditForm(ModelForm):
 
     def update(self):
         user = User.objects.get(username=self.cleaned_data['username'])
-        papayaUser = PapayaUser.objects.get(user = user)
-        papayaUser.user.email = self.cleaned_data['email'].lower()
-        papayaUser.user.first_name = self.cleaned_data['fname']
-        papayaUser.user.last_name = self.cleaned_data['lname']
-        papayaUser.image = self.cleaned_data['image']
-        papayaUser.save()
-        papayaUser.user.save()
+        user.email = self.cleaned_data['email'].lower()
+        user.first_name = self.cleaned_data['fname']
+        user.last_name = self.cleaned_data['lname']
+        user.image = self.cleaned_data['image']
+        user.save()
 
 
 class UserLoginForm(Form):
@@ -137,7 +131,7 @@ class BlogForm(ModelForm):
 
     image = forms.ImageField(widget=forms.FileInput, required=False,
                             label="Image:")
-    
+
     def update(self, blog_id):
         blog = Blog.objects.get(id=blog_id)
         blog.image = self.cleaned_data['image']

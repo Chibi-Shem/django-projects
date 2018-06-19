@@ -1,21 +1,26 @@
 {% extends 'papaya/base.html' %}
+{% load static %}
 
 {% block content %}
 <div class="container well" id="bodyBox">
     <div class="row">
-        <h1>{{ profile.user.username }}'s profile</h1>
+        <h1>{{ profile.username }}'s profile</h1>
     </div>
     <br>
     <div class="row">
         <div class="col-sm-3 container">
             <div class="row">
+                {% if profile.image %}
                 <img src="{{ profile.image.url }}">
+                {% else %}
+                <img src="{% static 'papaya/images/anon.jpeg' %}">
+                {% endif %}
             </div>
         </div>
         <div class="col-sm-7 container">
-            <h2>{{ profile.user.first_name|add:" "|add:profile.user.last_name }}</h2>
-            <h3><i>{{ profile.user.email }}</i></h3>
-            {% if user.id == profile.user.id %}
+            <h2>{{ profile.first_name|add:" "|add:profile.last_name }}</h2>
+            <h3><i>{{ profile.email }}</i></h3>
+            {% if user.id == profile.id %}
             <a class="btn btn-default" href="{% url 'papaya:profile_edit' %}">Edit</a>
             <a class="btn btn-default" href="{% url 'papaya:profile_changepass' %}">Change password</a>
             {% endif %}

@@ -7,7 +7,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from .forms import UserRegistrationForm, UserEditForm
 from .forms import UserChangepassForm, BlogForm, UserLoginForm
-from .models import Blog, PapayaUser
+from .models import Blog, User
 
 
 def listing(request):
@@ -40,24 +40,24 @@ def profile_create(request):
 
 def profile_edit(request):
     """Displays the user's edit page"""
-    papayaUser = PapayaUser.objects.get(user=request.user)
+    user = User.objects.get(username=request.user.username)
     form = UserEditForm(
-                initial={'image': papayaUser.image,
-                         'username':papayaUser.user.username,
-                         'email':papayaUser.user.email,
-                         'fname':papayaUser.user.first_name,
-                         'lname':papayaUser.user.last_name,
+                initial={'image': user.image,
+                         'username':user.username,
+                         'email':user.email,
+                         'fname':user.first_name,
+                         'lname':user.last_name,
                         })
     if request.method == 'POST':
         form = UserEditForm(request.POST, request.FILES)
         if form.is_valid():
             if not request.FILES:
-                form.cleaned_data['image'] = papayaUser.image
+                form.cleaned_data['image'] = user.image
             form.update()
             return redirect(reverse('papaya:profile',
-                                args=(papayaUser.user.id,)))
+                                args=(user.id,)))
     return render(request, 'papaya/profile_edit.html',
-            {'form':form, 'profile_image':papayaUser.image})
+            {'form':form, 'profile_image':user.image})
 
 
 def profile_changepass(request):
@@ -116,8 +116,7 @@ def profile_logout(request):
 def profile(request, profile_id):
     """Displays the user's profile page"""
     user = User.objects.get(id=profile_id)
-    papayaUser = PapayaUser.objects.get(user=user)
-    return render(request, 'papaya/profile.html', {'profile':papayaUser})
+    return render(request, 'papaya/profile.html', {'profile':user})
 
 
 def blogs(request):
