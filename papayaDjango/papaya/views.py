@@ -38,50 +38,45 @@ def profile_create(request):
     return render(request, 'papaya/profile_create.html', {'form':form})
 
 
+@login_required()
 def profile_edit(request):
     """Displays the user's edit page"""
     user = User.objects.get(username=request.user.username)
-    form = UserEditForm(
-                initial={'image': user.image,
-                         'username':user.username,
-                         'email':user.email,
-                         'fname':user.first_name,
-                         'lname':user.last_name,
-                        })
+    form = UserEditForm(instance=user)
     if request.method == 'POST':
-        form = UserEditForm(request.POST, request.FILES)
+        form = UserEditForm(request.POST, request.FILES, instance=user)
         if form.is_valid():
             if not request.FILES:
                 form.cleaned_data['image'] = user.image
-            form.update()
+            form.save()
             return redirect(reverse('papaya:profile',
                                 args=(user.id,)))
     return render(request, 'papaya/profile_edit.html',
             {'form':form, 'profile_image':user.image})
 
 
+@login_required()
 def profile_changepass(request):
     """Displays the user's edit password page"""
     error = False
-    user = User.objects.get(username=request.user.username)
-    form = UserChangepassForm(initial={'username':user.username})
+    username = request.user.username
+    user = User.objects.get(username=username)
+    form = UserChangepassForm()
     if request.method == 'POST':
         form = UserChangepassForm(request.POST)
         if form.is_valid():
-            username = form.cleaned_data['username']
-            password_old = form.cleaned_data['password_old']
+            password = form.cleaned_data['password']
             user = authenticate(request,
                                 username=username,
-                                password=password_old)
+                                password=password)
             if user is not None:
-                form.update()
-                username = form.cleaned_data['username']
-                password = form.cleaned_data['password']
+                form.update(username)
+                password_new = form.cleaned_data['password_new']
                 user = authenticate(request,
                                     username=username,
-                                    password=password)
+                                    password=password_new)
                 login(request, user)
-                return redirect(reverse('papaya:profile', args=(user.id,)))
+                return redirect(reverse('papaya:profile', args=(request.user.id,)))
             else:
                 error = True
     return render(request, 'papaya/profile_changepass.html',
@@ -95,8 +90,8 @@ def profile_login(request):
     if request.method == 'POST':
         form = UserLoginForm(request.POST)
         if form.is_valid():
-            username = request.POST['username']
-            password = request.POST['password']
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
             user = authenticate(request, username=username, password=password)
             if user is not None:
                 login(request, user)
@@ -138,33 +133,32 @@ def blogs_create(request):
                  {'form':form})
 
 
+@login_required()
+def blogs_edit(request, blog_id):
+    """Displays the blog's edit page"""
+    blog = get_object_or_404(Blog, id=blog_id, author=request.user)
+    form = BlogForm(instance=blog)
+    if request.method=='POST':
+        form = BlogForm(request.POST, request.FILES, instance=blog)
+        if form.is_valid():
+            if not request.FILES:
+                form.cleaned_data['image'] = blog.image
+            form.save()
+            return redirect(reverse('papaya:blogs_view', args=(blog_id,)))
+    return render(request, 'papaya/blogs_create.html',
+                    {'form':form, 'blog_image':blog.image})
+
+
+@login_required()
+def blogs_delete(request, blog_id):
+    """Deletes a blog """
+    blog = get_object_or_404(Blog, id=blog_id, author=request.user)
+    blog.delete()
+    return redirect(reverse('papaya:blogs'))
+
+
 def blogs_view(request, blog_id):
     """Displays the blog's detail page"""
-    try:
-        blog = get_object_or_404(Blog, id=blog_id, author=request.user)
-        if request.method=='POST':
-            if request.POST['action'] == 'edit':
-                form = BlogForm(initial={'image':blog.image,
-                                         'title':blog.title,
-                                         'author':request.user,
-                                         'category':blog.category,
-                                         'content':blog.content
-                                        })
-                return render(request, 'papaya/blogs_create.html',
-                             {'form':form, 'blog_image':blog.image})
-            elif request.POST['action'] == 'delete':
-                blog.delete()
-                return redirect(reverse('papaya:blogs'))
-            elif request.POST['action'] == 'done':
-                form = BlogForm(request.POST, request.FILES)
-                if form.is_valid():
-                    if not request.FILES:
-                        form.cleaned_data['image'] = blog.image
-                    form.update(blog_id)
-                    return redirect(reverse('papaya:blogs_view',
-                                    args=(blog_id,)))
-    except:
-        blog = get_object_or_404(Blog, id=blog_id)
-    # import pdb; pdb.set_trace()
+    blog = get_object_or_404(Blog, id=blog_id)
     return render(request, 'papaya/blogs_view.html',
                  {'blog':blog})

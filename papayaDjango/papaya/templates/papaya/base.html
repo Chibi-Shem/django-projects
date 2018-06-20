@@ -80,7 +80,7 @@
                 {% endif %}
             </li>
         </ul>
-        <form class="navbar-form navbar-right" method="post">
+        <form class="navbar-form navbar-right" method="post" action="{% url 'papaya:listing' %}">
             {% csrf_token %}
             <div class="form-group">
                 <input style="width:300px" class="form-control" type="text" placeholder="search" name="search">

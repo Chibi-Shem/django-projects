@@ -26,4 +26,8 @@ urlpatterns = [
           views.blogs_create, name='blogs_create'),
     path('blogs/<int:blog_id>',
           views.blogs_view, name='blogs_view'),
+    path('blogs/edit/<int:blog_id>',
+          views.blogs_edit, name='blogs_edit'),
+    path('blogs/delete/<int:blog_id>',
+          views.blogs_delete, name='blogs_delete'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

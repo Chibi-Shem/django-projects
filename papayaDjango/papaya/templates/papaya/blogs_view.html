@@ -44,8 +44,8 @@
             {% if user.is_authenticated and blog.author == user %}
                 <form method="post">
                     {% csrf_token %}
-                    <button name="action" class="btn btn-default" type="submit" value="edit">Edit</button>
-                    <button name="action" class="btn btn-default" type="submit" value="delete">Delete</button>
+                    <a class="btn btn-default" type="btn" href="{% url 'papaya:blogs_edit' blog.id %}">Edit</a>
+                    <a class="btn btn-default" type="btn" href="{% url 'papaya:blogs_delete' blog.id %}">Delete</a>
                 </form>
             {% endif %}
         </div>
